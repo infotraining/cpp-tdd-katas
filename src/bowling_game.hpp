@@ -32,9 +32,27 @@ class BowlingGame
         return pins_[roll_index + 1] + pins_[roll_index + 2];
     }
 
-    size_t frame_score(size_t roll_index) const
+    auto frame_score(size_t roll_index) const
     {
-        return pins_[roll_index] + pins_[roll_index + 1];
+        size_t score_in_frame = 0;
+        size_t rolls_in_frame = 2;
+
+        if (is_strike(roll_index))
+        {
+            score_in_frame += all_pins_in_frame + strike_bonus(roll_index);
+            rolls_in_frame = 1;
+        }
+        else
+        {
+            score_in_frame = pins_[roll_index] + pins_[roll_index + 1];
+
+            if (is_spare(roll_index))
+            {
+                score_in_frame += spare_bonus(roll_index);
+            }
+        }
+
+        return std::pair{score_in_frame, rolls_in_frame};
     }
 
 public:
@@ -45,19 +63,10 @@ public:
 
         for (size_t i = 0; i < frames_count; ++i)
         {
-            if (is_strike(roll_index))
-            {
-                result += all_pins_in_frame + strike_bonus(roll_index);
-                ++roll_index;
-            }
-            else
-            {
-                result += frame_score(roll_index);
-                if (is_spare(roll_index))
-                    result += spare_bonus(roll_index);
+            auto [score_in_frame, rolls_in_frame] = frame_score(roll_index);
 
-                roll_index += 2;
-            }
+            result += score_in_frame;
+            roll_index += rolls_in_frame;
         }
 
         return result;
