@@ -1,5 +1,6 @@
 #include "bowling_game.hpp"
 #include "gtest/gtest.h"
+#include "gmock/gmock.h"
 
 class BowlingGameTests : public ::testing::Test
 {
@@ -68,4 +69,16 @@ TEST_F(BowlingGameTests, SpareInLastFrame)
     game.roll(6);
 
     ASSERT_EQ(game.score(), 34);
+}
+
+TEST_F(BowlingGameTests, StrikeInLastFrame)
+{
+    using namespace ::testing;
+
+    roll_many(18, 1);
+    roll_strike();
+    game.roll(6);
+    game.roll(7);
+
+    ASSERT_THAT(game.score(), Eq(41));
 }
