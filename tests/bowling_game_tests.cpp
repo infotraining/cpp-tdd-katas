@@ -31,3 +31,14 @@ TEST_F(BowlingGameTests, WhenAllRollsNoMarkScoreIsSumOfPins)
 
     ASSERT_EQ(game.score(), 40);
 }
+
+TEST_F(BowlingGameTests, Spare)
+{
+    // spare
+    game.roll(1);
+    game.roll(9);
+
+    roll_many(18, 1);
+
+    ASSERT_EQ(game.score(), 29); 
+}
