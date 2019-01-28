@@ -6,15 +6,17 @@
 
 class BowlingGame
 {
+    unsigned int score_ = 0;
+
 public:
     unsigned int score() const
     {
-        return 0;
+        return score_;
     }
 
     void roll(unsigned int pins)
     {
-
+        score_ += pins;
     }
 };
 

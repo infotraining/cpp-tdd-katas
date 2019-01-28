@@ -1,19 +1,33 @@
 #include "bowling_game.hpp"
 #include "gtest/gtest.h"
 
-TEST(BowlingGameTests, NewGameScore)
+class BowlingGameTests : public ::testing::Test
 {
+protected:
     BowlingGame game;
+
+    void roll_many(unsigned int count, unsigned int pins)
+    {
+        for (auto i = 0u; i < count; ++i)
+            game.roll(pins);
+    }
+};
+
+TEST_F(BowlingGameTests, NewGameScore)
+{
+    ASSERT_EQ(game.score(), 0);
+}
+
+TEST_F(BowlingGameTests, AllRollsInAGutter)
+{
+    roll_many(20, 0);
 
     ASSERT_EQ(game.score(), 0);
 }
 
-TEST(BowlingGameTests, AllRollsInAGutter)
+TEST_F(BowlingGameTests, WhenAllRollsNoMarkScoreIsSumOfPins)
 {
-    BowlingGame game;
+    roll_many(20, 2);
 
-    for(int i = 0; i < 20; ++i)
-        game.roll(0);
-    
-    ASSERT_EQ(game.score(), 0);
+    ASSERT_EQ(game.score(), 40);
 }
