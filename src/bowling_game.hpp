@@ -6,12 +6,15 @@
 
 class BowlingGame
 {
+    constexpr static size_t frames_count = 10;
+    constexpr static size_t all_pins_in_frame = 10;
+
     std::array<unsigned int, 20> pins_ = {{}};
     size_t roll_no = 0;
 
     bool is_spare(size_t roll_index) const
     {
-        return pins_[roll_index] + pins_[roll_index + 1] == 10;
+        return pins_[roll_index] + pins_[roll_index + 1] == all_pins_in_frame;
     }
 
     size_t spare_bonus(size_t roll_index) const
@@ -21,7 +24,7 @@ class BowlingGame
 
     bool is_strike(size_t roll_index) const
     {
-        return pins_[roll_index] == 10;
+        return pins_[roll_index] == all_pins_in_frame;
     }
 
     size_t strike_bonus(size_t roll_index) const
@@ -40,11 +43,11 @@ public:
         size_t result{};
         size_t roll_index = 0;
 
-        for (size_t i = 0; i < 10; ++i)
+        for (size_t i = 0; i < frames_count; ++i)
         {
             if (is_strike(roll_index))
             {
-                result += 10 + strike_bonus(roll_index);
+                result += all_pins_in_frame + strike_bonus(roll_index);
                 ++roll_index;
             }
             else
