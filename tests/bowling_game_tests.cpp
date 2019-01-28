@@ -60,3 +60,12 @@ TEST_F(BowlingGameTests, Strike)
 
     ASSERT_EQ(game.score(), 30);
 }
+
+TEST_F(BowlingGameTests, SpareInLastFrame)
+{
+    roll_many(18, 1);
+    roll_spare();
+    game.roll(6);
+
+    ASSERT_EQ(game.score(), 34);
+}

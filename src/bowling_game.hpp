@@ -9,7 +9,7 @@ class BowlingGame
     constexpr static size_t frames_count = 10;
     constexpr static size_t all_pins_in_frame = 10;
 
-    std::array<unsigned int, 20> pins_ = {{}};
+    std::array<unsigned int, 21> pins_ = {{}};
     size_t roll_no = 0;
 
     bool is_spare(size_t roll_index) const
