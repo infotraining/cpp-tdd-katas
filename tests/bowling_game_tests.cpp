@@ -11,6 +11,12 @@ protected:
         for (auto i = 0u; i < count; ++i)
             game.roll(pins);
     }
+
+    void roll_spare()
+    {
+        game.roll(1);
+        game.roll(9);
+    }
 };
 
 TEST_F(BowlingGameTests, NewGameScore)
@@ -34,11 +40,9 @@ TEST_F(BowlingGameTests, WhenAllRollsNoMarkScoreIsSumOfPins)
 
 TEST_F(BowlingGameTests, Spare)
 {
-    // spare
-    game.roll(1);
-    game.roll(9);
+    roll_spare();
 
     roll_many(18, 1);
 
-    ASSERT_EQ(game.score(), 29); 
+    ASSERT_EQ(game.score(), 29);
 }
