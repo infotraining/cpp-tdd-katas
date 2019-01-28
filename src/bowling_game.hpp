@@ -11,6 +11,11 @@ public:
     {
         return 0;
     }
+
+    void roll(unsigned int pins)
+    {
+
+    }
 };
 
 #endif
