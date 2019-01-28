@@ -89,3 +89,10 @@ TEST_F(LastFrameTests, StrikeInLastFrame)
 
     ASSERT_THAT(game.score(), Eq(41));
 }
+
+TEST_F(BowlingGameTests, PerfectGame)
+{
+    roll_many(12, 10);
+
+    ASSERT_EQ(game.score(), 300);
+}
