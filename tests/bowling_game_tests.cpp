@@ -30,14 +30,14 @@ TEST_F(BowlingGameTests, NewGameScore)
     ASSERT_EQ(game.score(), 0);
 }
 
-TEST_F(BowlingGameTests, AllRollsInAGutter)
+TEST_F(BowlingGameTests, AllpinsInAGutter)
 {
     roll_many(20, 0);
 
     ASSERT_EQ(game.score(), 0);
 }
 
-TEST_F(BowlingGameTests, WhenAllRollsNoMarkScoreIsSumOfPins)
+TEST_F(BowlingGameTests, WhenAllpinsNoMarkScoreIsSumOfPins)
 {
     roll_many(20, 2);
 
@@ -96,3 +96,50 @@ TEST_F(BowlingGameTests, PerfectGame)
 
     ASSERT_EQ(game.score(), 300);
 }
+
+///////////////////////////////////////////////
+// Parametrized tests
+
+struct BowlingTestParams
+{
+    std::initializer_list<unsigned int> pins;
+    unsigned int expected_score;
+};
+
+std::ostream& operator<<(std::ostream& out, const BowlingTestParams& param)
+{
+    out << "{ [ ";
+
+    for (const auto& pin : param.pins)
+    {
+        out << pin << " ";
+    }
+
+    out << "] - " << param.expected_score << " }";
+    return out;
+}
+
+struct BowlingBulkTests : ::testing::TestWithParam<BowlingTestParams>
+{
+};
+
+TEST_P(BowlingBulkTests, GameScore)
+{
+    BowlingGame game;
+
+    auto param = GetParam();
+
+    for (const auto& r : param.pins)
+        game.roll(r);
+
+    ASSERT_EQ(game.score(), param.expected_score);
+}
+
+BowlingTestParams bowling_test_input[] = {
+    {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 20},
+    {{10, 3, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 44},
+    {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 10, 5, 5}, 38},
+    {{1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 10}, 119},
+    {{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}, 300}};
+
+INSTANTIATE_TEST_CASE_P(PackOfBowlingTests, BowlingBulkTests, ::testing::ValuesIn(bowling_test_input));
