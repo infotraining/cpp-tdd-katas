@@ -17,6 +17,11 @@ protected:
         game.roll(1);
         game.roll(9);
     }
+
+    void roll_strike()
+    {
+        game.roll(10);
+    }
 };
 
 TEST_F(BowlingGameTests, NewGameScore)
@@ -45,4 +50,13 @@ TEST_F(BowlingGameTests, Spare)
     roll_many(18, 1);
 
     ASSERT_EQ(game.score(), 29);
+}
+
+TEST_F(BowlingGameTests, Strike)
+{
+    roll_many(2, 1);
+    roll_strike();
+    roll_many(16, 1);
+
+    ASSERT_EQ(game.score(), 30);
 }
