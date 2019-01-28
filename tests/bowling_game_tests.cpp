@@ -1,6 +1,6 @@
 #include "bowling_game.hpp"
-#include "gtest/gtest.h"
 #include "gmock/gmock.h"
+#include "gtest/gtest.h"
 
 class BowlingGameTests : public ::testing::Test
 {
@@ -62,20 +62,27 @@ TEST_F(BowlingGameTests, Strike)
     ASSERT_EQ(game.score(), 30);
 }
 
-TEST_F(BowlingGameTests, SpareInLastFrame)
+class LastFrameTests : public BowlingGameTests
 {
-    roll_many(18, 1);
+protected:
+    void SetUp() override
+    {
+        roll_many(18, 1);
+    }
+};
+
+TEST_F(LastFrameTests, SpareInLastFrame)
+{
     roll_spare();
     game.roll(6);
 
     ASSERT_EQ(game.score(), 34);
 }
 
-TEST_F(BowlingGameTests, StrikeInLastFrame)
+TEST_F(LastFrameTests, StrikeInLastFrame)
 {
     using namespace ::testing;
 
-    roll_many(18, 1);
     roll_strike();
     game.roll(6);
     game.roll(7);
