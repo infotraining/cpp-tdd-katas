@@ -19,13 +19,13 @@ theme : white
 # Theme-Override Setting
 # Doc: https://gitpitch.com/docs/settings/custom-theme
 #
-theme-override : ./css/custom-theme.css
+theme-override : slides/css/custom-theme.css
 
 #
 # Logo Setting
 # https://gitpitch.com/docs/settings/logo
 #
-logo : ./img/logo.png
+logo : slides/img/logo.png
 logo-position : bottom-right
 
 #
