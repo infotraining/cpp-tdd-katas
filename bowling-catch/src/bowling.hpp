@@ -5,7 +5,7 @@
 #include <tuple>
 
 
-class Game
+class BowlingGame
 {
 public:
     size_t score() const

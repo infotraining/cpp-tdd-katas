@@ -1,10 +1,10 @@
-#include "catch.hpp"
 #include "bowling.hpp"
+#include "catch.hpp"
 #include <numeric>
 
 using namespace std;
 
-void roll_many(Game& game, size_t count, size_t pins)
+void roll_many(BowlingGame& game, size_t count, size_t pins)
 {
     for (size_t i = 0; i < count; ++i)
     {
@@ -12,43 +12,43 @@ void roll_many(Game& game, size_t count, size_t pins)
     }
 }
 
-void roll_spare(Game& game)
+void roll_spare(BowlingGame& game)
 {
     game.roll(1);
     game.roll(9);
 }
 
-void roll_strike(Game& game)
+void roll_strike(BowlingGame& game)
 {
     game.roll(10);
 }
 
-TEST_CASE("when game starts score is zero", "[score]")
+TEST_CASE("When game starts score is zero", "[score]")
 {
-    Game game;
+    BowlingGame game;
 
     REQUIRE(game.score() == 0);
 }
 
-TEST_CASE("when all rolls in gutter score is zero", "[score]")
+TEST_CASE("When all rolls in gutter score is zero", "[score]")
 {
-    Game game;
+    BowlingGame game;
     roll_many(game, 20, 0);
 
     REQUIRE(game.score() == 0);
 }
 
-TEST_CASE("when all rolls no mark score is sum of pins", "[score]")
+TEST_CASE("When all rolls no mark score is sum of pins", "[score]")
 {
-    Game game;
+    BowlingGame game;
     roll_many(game, 20, 2);
 
     REQUIRE(game.score() == 40);
 }
 
-TEST_CASE("when spare next throw is counted twice", "[score]")
+TEST_CASE("When spare next throw is counted twice", "[score]")
 {
-    Game game;
+    BowlingGame game;
 
     roll_spare(game);
     roll_many(game, 18, 1);
@@ -56,9 +56,9 @@ TEST_CASE("when spare next throw is counted twice", "[score]")
     REQUIRE(game.score() == 29);
 }
 
-TEST_CASE("when strike next two throws are counted twice", "[score]")
+TEST_CASE("When strike next two throws are counted twice", "[score]")
 {
-    Game game;
+    BowlingGame game;
 
     roll_many(game, 2, 1);
     roll_strike(game);
@@ -67,9 +67,9 @@ TEST_CASE("when strike next two throws are counted twice", "[score]")
     REQUIRE(game.score() == 30);
 }
 
-TEST_CASE("when spare in a last frame player has an extra roll", "[score]")
+TEST_CASE("When spare in a last frame player has an extra roll", "[score]")
 {
-    Game game;
+    BowlingGame game;
 
     roll_many(game, 18, 1);
     roll_spare(game);
@@ -78,9 +78,9 @@ TEST_CASE("when spare in a last frame player has an extra roll", "[score]")
     REQUIRE(game.score() == 34);
 }
 
-TEST_CASE("when strike in a last frame player has two extra rolls", "[score]")
+TEST_CASE("When strike in a last frame player has two extra rolls", "[score]")
 {
-    Game game;
+    BowlingGame game;
 
     roll_many(game, 18, 1);
     roll_strike(game);
@@ -90,12 +90,35 @@ TEST_CASE("when strike in a last frame player has two extra rolls", "[score]")
     REQUIRE(game.score() == 41);
 }
 
-TEST_CASE("perfect game - score 300")
+TEST_CASE("Perfect game - score 300")
 {
-    Game game;
+    BowlingGame game;
 
-    for(int i = 0; i < 12; ++i)
+    for (int i = 0; i < 12; ++i)
         roll_strike(game);
 
     REQUIRE(game.score() == 300);
+}
+
+struct BowlingTestParams
+{
+    std::vector<unsigned int> pins;
+    unsigned int expected_score;
+};
+
+TEST_CASE("Parametrized tests")
+{
+    auto params = GENERATE(
+        BowlingTestParams{{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 20},
+        BowlingTestParams{{10, 3, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 44},
+        BowlingTestParams{{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 10, 5, 5}, 38},
+        BowlingTestParams{{1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 10}, 119},
+        BowlingTestParams{{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}, 300});
+
+    BowlingGame game;
+
+    for (const auto& r : params.pins)
+        game.roll(r);
+
+    REQUIRE(game.score() == params.expected_score);
 }
