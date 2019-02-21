@@ -100,7 +100,7 @@ TEST_CASE("Perfect game - score 300")
     REQUIRE(game.score() == 300);
 }
 
-struct BowlingTestParams
+struct BowlingGameExample
 {
     std::vector<unsigned int> pins;
     unsigned int expected_score;
@@ -109,11 +109,11 @@ struct BowlingTestParams
 TEST_CASE("Parametrized tests")
 {
     auto params = GENERATE(
-        BowlingTestParams{{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 20},
-        BowlingTestParams{{10, 3, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 44},
-        BowlingTestParams{{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 10, 5, 5}, 38},
-        BowlingTestParams{{1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 10}, 119},
-        BowlingTestParams{{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}, 300});
+        BowlingGameExample{{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 20},
+        BowlingGameExample{{10, 3, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 44},
+        BowlingGameExample{{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 10, 5, 5}, 38},
+        BowlingGameExample{{1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 10}, 119},
+        BowlingGameExample{{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}, 300});
 
     BowlingGame game;
 
