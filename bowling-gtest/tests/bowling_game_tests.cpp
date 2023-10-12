@@ -30,14 +30,14 @@ TEST_F(BowlingGameTests, NewGameScore)
     ASSERT_EQ(game.score(), 0);
 }
 
-TEST_F(BowlingGameTests, AllpinsInAGutter)
+TEST_F(BowlingGameTests, AllPinsInAGutter)
 {
     roll_many(20, 0);
 
     ASSERT_EQ(game.score(), 0);
 }
 
-TEST_F(BowlingGameTests, WhenAllpinsNoMarkScoreIsSumOfPins)
+TEST_F(BowlingGameTests, WhenAllPinsNoMarkScoreIsSumOfPins)
 {
     roll_many(20, 2);
 
@@ -129,13 +129,13 @@ TEST_P(BowlingBulkTests, GameScore)
 
     auto param = GetParam();
 
-    for (const auto& r : param.pins)
-        game.roll(r);
+    for (const auto& pins : param.pins)
+        game.roll(pins);
 
     ASSERT_EQ(game.score(), param.expected_score);
 }
 
-BowlingTestParams bowling_test_input[] = {
+const BowlingTestParams bowling_test_input[] = {
     {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 20},
     {{10, 3, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 44},
     {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 10, 5, 5}, 38},

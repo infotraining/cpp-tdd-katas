@@ -18,6 +18,7 @@ set(PROJECT_MAIN ${PROJECT_ID})
 project(${PROJECT_MAIN})
 
 add_subdirectory(src)
+enable_testing()
 add_subdirectory(tests)
 
 ####################

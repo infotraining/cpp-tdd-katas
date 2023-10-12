@@ -6,6 +6,7 @@
 #
 # For further details, see https://gitpitch.com/docs/settings.
 #
+gitpitch         : 3.0  
 
 published : true
 
@@ -19,13 +20,13 @@ theme : white
 # Theme-Override Setting
 # Doc: https://gitpitch.com/docs/settings/custom-theme
 #
-theme-override : slides/css/custom-theme.css
+theme-override : css/custom-theme.css
 
 #
 # Logo Setting
 # https://gitpitch.com/docs/settings/logo
 #
-logo : slides/img/logo.png
+logo : img/logo.png
 logo-position : bottom-right
 
 #

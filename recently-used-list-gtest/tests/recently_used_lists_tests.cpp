@@ -6,11 +6,18 @@
 
 using namespace ::testing;
 
-TEST(RecentlyUsedList_DefaultConstructor, IsEmpty)
+TEST(RecentlyUsedList_DefaultConstructed, IsEmpty)
 {
     RecentlyUsedList rul;
 
     ASSERT_THAT(rul, ::testing::IsEmpty());
+}
+
+TEST(RecentlyUsedList_DefaultConstructed, SizeIsZero)
+{
+    RecentlyUsedList rul;
+
+    ASSERT_THAT(rul.size(), ::testing::Eq(0));
 }
 
 TEST(RecentlyUsedList_AddingItem, IsNotEmpty)
@@ -27,9 +34,14 @@ TEST(RecentlyUsedList_AddingItem, SizeIsIncreased)
     RecentlyUsedList rul;
 
     rul.add("item1");
-    rul.add("item2");
 
-    ASSERT_THAT(rul.size(), Eq(2u));
+    auto size_before = rul.size();
+    ASSERT_EQ(size_before, 1u) << "Guard for a test";
+
+    rul.add("item2");
+    auto size_after = rul.size();
+
+    ASSERT_THAT(size_after - size_before, Eq(1u));
 }
 
 TEST(RecentlyUsedList_AddingItem, AddingEmptyStringThrowsAnException)
@@ -53,14 +65,14 @@ struct RecentlyUsedList_WithItems : Test
 {
     RecentlyUsedList rul;
 
-    void SetUp()
+    void SetUp() override
     {
         rul.add("item1");
         rul.add("item2");
         rul.add("item3");
     }
 
-    void TearDown()
+    void TearDown() override
     {
         rul.clear();
     }
@@ -83,9 +95,9 @@ struct RecentlyUsedList_Indexing : RecentlyUsedList_WithItems
 
 TEST_F(RecentlyUsedList_Indexing, ItemsCanBeLookedUpByIndex)
 {
-    ASSERT_THAT(rul[0], Eq("item3"));
-    ASSERT_THAT(rul[1], Eq("item2"));
-    ASSERT_THAT(rul[2], Eq("item1"));
+    ASSERT_THAT(rul[0], StrEq("item3"));
+    ASSERT_THAT(rul[1], StrEq("item2"));
+    ASSERT_THAT(rul[2], StrEq("item1"));
 }
 
 struct RecentlyUsedList_InsertingDuplicate : RecentlyUsedList_WithItems
@@ -110,14 +122,14 @@ TEST_F(RecentlyUsedList_InsertingDuplicate, ItemIsMovedToFront)
     ASSERT_THAT(rul, ElementsAre("item2", "item3", "item1"));
 }
 
-TEST(RecentlyUsedList_BoundedCapacity, DefualtConstructor_SetsMaxCapacity)
+TEST(RecentlyUsedList_BoundedCapacity, DefaultConstructor_SetsMaxCapacity)
 {
     RecentlyUsedList rul;
 
     ASSERT_THAT(rul.capacity(), Eq(std::numeric_limits<size_t>::max()));
 }
 
-TEST(RecentlyUsedList_BoundedCapacity, ConstructorWithArg_CapacityIsBounded)
+TEST(RecentlyUsedList_BoundedCapacity, ConstructorWithArg_CapacityIsSet)
 {
     RecentlyUsedList rul(5);
 
@@ -126,6 +138,7 @@ TEST(RecentlyUsedList_BoundedCapacity, ConstructorWithArg_CapacityIsBounded)
 
 TEST(RecentlyUsedList_BoundedCapacity, WhenListIsFullAddingUniqueItemDropsItemAtBack)
 {
+    // Arrange
     RecentlyUsedList rul(3);
 
     rul.add("item1");
@@ -134,7 +147,9 @@ TEST(RecentlyUsedList_BoundedCapacity, WhenListIsFullAddingUniqueItemDropsItemAt
 
     EXPECT_THAT(rul.size(), Eq(rul.capacity()));
 
+    // Act
     rul.add("item4");
 
+    // Assert
     ASSERT_THAT(rul, ElementsAre("item4", "item3", "item2"));
 }

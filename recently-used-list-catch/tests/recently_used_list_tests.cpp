@@ -14,7 +14,7 @@ namespace TestHelpers
     }
 }
 
-TEST_CASE("RecentlyUsedList after default creation", "[rul][constructors]")
+TEST_CASE("RecentlyUsedList after default construction", "[rul][constructors]")
 {
     RecentlyUsedList rul;
 
@@ -55,7 +55,7 @@ TEST_CASE("RecentlyUsedList - inserting unique items", "[rul][insert]")
         SECTION("items are in lifo order")
         {
             auto expected_order = {"item3", "item2", "item1"};
-            REQUIRE(equal(begin(rul), end(rul), begin(expected_order)));
+            REQUIRE(equal(begin(rul), end(rul), begin(expected_order), end(expected_order)));
         }
     }
 }
@@ -67,6 +67,7 @@ TEST_CASE("RecentlyUsedList - indexing", "[rul][index]")
     TestHelpers::add_many(rul, {"1", "2", "3"});
 
     REQUIRE(rul[0] == "3");
+    REQUIRE(rul[1] == "2");
     REQUIRE(rul[2] == "1");
 }
 
@@ -89,7 +90,7 @@ TEST_CASE("RecentlyUsedList - inserting duplicates", "[rul][insert][duplicates]"
         REQUIRE(rul.size() == prev_size);
     }
 
-    SECTION("moves duplicate at front")
+    SECTION("moves duplicate to front")
     {
         REQUIRE(rul.front() == item2);
     }
