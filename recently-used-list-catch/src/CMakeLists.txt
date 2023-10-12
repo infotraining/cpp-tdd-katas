@@ -2,8 +2,6 @@ set(PROJECT_LIB "${PROJECT_ID}_lib")
 set(PROJECT_LIB "${PROJECT_ID}_lib" PARENT_SCOPE)
 message(STATUS "PROJECT_LIB is: " ${PROJECT_LIB})
 
-project(${PROJECT_LIB})
-
 file(GLOB SRC_FILES *.cpp *.c *.cxx)
 file(GLOB SRC_HEADERS *.h *.hpp *.hxx)
 
