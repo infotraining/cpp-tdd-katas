@@ -1,5 +1,7 @@
 #include "source.hpp"
 
+#include <array>
+#include <ranges>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators_all.hpp>
 
@@ -7,9 +9,39 @@ using namespace std;
 
 struct Position
 {
+    static constexpr std::array<const char, 4> orientations = {'N', 'E', 'S', 'W'};
+
     int x;
     int y;
     char orientation;
+
+    constexpr Position next_clockwise() const
+    {
+        auto it = std::ranges::find(orientations, orientation);
+        assert(it != orientations.end());
+
+        auto next = std::next(it);
+        if (next == orientations.end())
+        {
+            next = orientations.begin();
+        }
+        
+        return Position{x, y, *next};
+    }
+
+    constexpr Position next_counter_clockwise() const
+    {
+        auto it = std::ranges::find(orientations, orientation);
+        assert(it != orientations.end());
+
+        if (it == orientations.begin())
+        {
+            it = orientations.end();
+        }
+        auto prev = std::prev(it);
+        
+        return Position{x, y, *prev};
+    }
 
     bool operator==(const Position& other) const = default;
 };
@@ -19,6 +51,9 @@ std::ostream& operator<<(std::ostream& out, const Position& pos)
     return out << "Position(" << pos.x << ", " << pos.y << ", " << pos.orientation << ")";
 }
 
+
+// refactor this removing the switch statement
+// and using a map
 class Rover
 {
     Position position_;
@@ -41,41 +76,12 @@ public:
 
     void turn_left()
     {
-        // refactor this removing the switch statement
-        switch (position_.orientation)
-        {
-        case 'N':
-            position_.orientation = 'W';
-            break;
-        case 'W':
-            position_.orientation = 'S';
-            break;
-        case 'S':
-            position_.orientation = 'E';
-            break;
-        case 'E':
-            position_.orientation = 'N';
-            break;
-        }
+        position_ = position_.next_counter_clockwise();
     }
 
     void turn_right()
     {
-        switch (position_.orientation)
-        {
-        case 'N':
-            position_.orientation = 'E';
-            break;
-        case 'E':
-            position_.orientation = 'S';
-            break;
-        case 'S':
-            position_.orientation = 'W';
-            break;
-        case 'W':
-            position_.orientation = 'N';
-            break;
-        }
+        position_ = position_.next_clockwise();        
     }
 };
 
