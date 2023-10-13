@@ -17,30 +17,20 @@ struct Position
 
     constexpr Position next_clockwise() const
     {
-        auto it = std::ranges::find(orientations, orientation);
-        assert(it != orientations.end());
-
-        auto next = std::next(it);
-        if (next == orientations.end())
-        {
-            next = orientations.begin();
-        }
+        auto index = std::ranges::find(orientations, orientation) - orientations.begin();
+        assert(index != orientations.size());
+        auto next_index = (index + 1) % orientations.size();
         
-        return Position{x, y, *next};
+        return Position{x, y, orientations[next_index]};
     }
 
     constexpr Position next_counter_clockwise() const
     {
-        auto it = std::ranges::find(orientations, orientation);
-        assert(it != orientations.end());
-
-        if (it == orientations.begin())
-        {
-            it = orientations.end();
-        }
-        auto prev = std::prev(it);
+        auto index = std::ranges::find(orientations, orientation) - orientations.begin();
+        assert(index != orientations.size());
+        auto next_index = (index - 1) % orientations.size();
         
-        return Position{x, y, *prev};
+        return Position{x, y, orientations[next_index]};
     }
 
     bool operator==(const Position& other) const = default;
@@ -52,8 +42,6 @@ std::ostream& operator<<(std::ostream& out, const Position& pos)
 }
 
 
-// refactor this removing the switch statement
-// and using a map
 class Rover
 {
     Position position_;
