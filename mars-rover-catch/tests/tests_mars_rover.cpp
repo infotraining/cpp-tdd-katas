@@ -89,6 +89,8 @@ TEST_CASE("move backward")
 
 TEST_CASE("rover executes set of commands")
 {
+    Rover rover{0, 0, 'N'};
+
     SECTION("returning final position")
     {
         auto commands_end = GENERATE(
@@ -98,9 +100,7 @@ TEST_CASE("rover executes set of commands")
             std::pair{"FFRFFLFFRFFLFFRFFLFF", Position{6, 8, 'N'}},
             std::pair{"FFRFFLFFRFBBFLFBBFRFFLFF", Position{4, 6, 'N'}});
 
-        auto [commands, end] = commands_end;
-
-        Rover rover{0, 0, 'N'};
+        auto [commands, end] = commands_end;        
 
         Position result = rover.go(commands);
 
@@ -118,8 +118,6 @@ TEST_CASE("rover executes set of commands")
 
         auto [commands, end] = commands_end;
 
-        Rover rover{0, 0, 'N'};
-
         Position result = rover.go(commands);
 
         CHECK(result == end);
@@ -127,11 +125,9 @@ TEST_CASE("rover executes set of commands")
 
     SECTION("at unknown commands")
     {
-        Rover rover{0, 0, 'N'};
         
         SECTION("exception is thrown")
         {
-
             auto cmd = "FFRFFLFFxLLLL";
 
             try
