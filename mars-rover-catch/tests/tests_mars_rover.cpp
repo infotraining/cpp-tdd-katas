@@ -14,7 +14,7 @@ TEST_CASE("rover reports its position and orientation")
 {
     Rover rover{Position{0, 0, 'N'}};
 
-    CHECK(rover.position() == Position(0, 0, 'N'));
+    REQUIRE(rover.position() == Position(0, 0, 'N'));
 }
 
 using StartEndPos = std::pair<Position, Position>;
@@ -33,7 +33,7 @@ TEST_CASE("turn left")
 
     rover.turn_left();
 
-    CHECK(rover.position() == end);
+    REQUIRE(rover.position() == end);
 }
 
 TEST_CASE("turn right")
@@ -67,7 +67,7 @@ TEST_CASE("move forward")
 
     rover.move_forward();
 
-    CHECK(rover.position() == end);
+    REQUIRE(rover.position() == end);
 }
 
 TEST_CASE("move backward")
@@ -84,7 +84,7 @@ TEST_CASE("move backward")
 
     rover.move_backward();
 
-    CHECK(rover.position() == end);
+    REQUIRE(rover.position() == end);
 }
 
 TEST_CASE("rover executes set of commands")
@@ -104,7 +104,7 @@ TEST_CASE("rover executes set of commands")
 
         Position result = rover.go(commands);
 
-        CHECK(result == end);
+        REQUIRE(result == end);
     }
 
     SECTION("commands are case insensitive")
@@ -120,7 +120,7 @@ TEST_CASE("rover executes set of commands")
 
         Position result = rover.go(commands);
 
-        CHECK(result == end);
+        REQUIRE(result == end);
     }
 
     SECTION("at unknown commands")
@@ -148,9 +148,9 @@ TEST_CASE("rover executes set of commands")
         {
             auto cmd = "FFRFFLFFxLLLL";
 
-            REQUIRE_THROWS(rover.go(cmd));
+            CHECK_THROWS(rover.go(cmd));
 
-            CHECK(rover.position() == Position{2, 4, 'N'});
+            REQUIRE(rover.position() == Position{2, 4, 'N'});
         }
     }
 }
