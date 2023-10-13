@@ -132,18 +132,42 @@ namespace TDD
         }
     };
 
-    class Rover
+    struct Grid
     {
-        Position position_;
+        size_t max_x;
+        size_t max_y;
 
-    public:
-        Rover(int x, int y, char orientation)
-            : position_{x, y, orientation}
+        Grid(size_t max_x = std::numeric_limits<size_t>::max(), 
+             size_t max_y = std::numeric_limits<size_t>::max())
+            : max_x{max_x}
+            , max_y{max_y}
         {
         }
 
-        Rover(Position position)
-            : position_{position}
+        Position wrap(Position position) const
+        {
+            auto [x, y] = position.coordinates();
+
+            int wrapped_x = x >= 0 ? x % max_x : max_x - (-x % max_x);
+            int wrapped_y = y >= 0 ? y % max_y : max_y - (-y % max_y);
+
+            return Position{wrapped_x, wrapped_y, position.orientation()};
+        }
+    };
+
+    class Rover
+    {
+        Position position_;
+        Grid grid_;
+
+    public:
+        Rover(int x, int y, char orientation, Grid grid = {})
+            : position_{x, y, orientation}, grid_{grid}
+        {
+        }
+
+        Rover(Position position, Grid grid = {})
+            : position_{position}, grid_{grid}
         {
         }
 
@@ -194,6 +218,8 @@ namespace TDD
                     throw UnknownCommand{std::string{command}, commands};
                 }
             }
+
+            position_ = grid_.wrap(position_);
 
             return position();
         }

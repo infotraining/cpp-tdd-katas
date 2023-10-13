@@ -154,3 +154,34 @@ TEST_CASE("rover executes set of commands")
         }
     }
 }
+
+TEST_CASE("rover wraps coordinates on the map")
+{
+    Grid grid{10, 10};
+    
+    auto params = GENERATE(
+        std::tuple{Position{0, 9, 'N'}, "F", Position{0, 0, 'N'}},         
+        std::tuple{Position{0, 0, 'N'}, "B", Position{0, 9, 'N'}},
+        std::tuple{Position{9, 0, 'E'}, "F", Position{0, 0, 'E'}},
+        std::tuple{Position{0, 0, 'E'}, "B", Position{9, 0, 'E'}}
+    );
+
+    auto [start_pos, cmd, end_pos] = params;
+
+    Rover rover{start_pos, grid};
+    
+    Position result = rover.go(cmd);
+
+    REQUIRE(result == end_pos);
+}
+
+TEST_CASE("Grid - wrapping")
+{
+    Grid grid{10, 10};
+
+    Position pos{-5, -13, 'N'};
+
+    Position result = grid.wrap(pos);
+
+    REQUIRE(result == Position{5, 7, 'N'});
+}
