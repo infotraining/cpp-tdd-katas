@@ -21,7 +21,7 @@ jobs:
   
       - name: Install dependencies
         if: runner.os == 'Linux'
-        run: apt-get install curl zip unzip tar lcov
+        run: sudo apt-get install curl zip unzip tar lcov
   
       - name: Setup vcpkg (it does not install any package yet)
         uses: lukka/run-vcpkg@v11
