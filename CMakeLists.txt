@@ -3,7 +3,6 @@
 
 cmake_minimum_required(VERSION 3.16)
 set(CMAKE_VERBOSE_MAKEFILE ON)
-set(ENABLE_COVERAGE TRUE)
 
 if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
   set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")  
@@ -39,12 +38,12 @@ if(NOT MSVC AND ENABLE_COVERAGE)
   add_custom_target(coverage
     # gather data
     COMMAND ${LCOV} --directory . --capture --output-file coverage.info
-    COMMAND ${LCOV} --remove coverage.info "/usr/*" ${CMAKE_BINARY_DIR}"/vcpkg_installed/*"  -o coverage.info.filtered
+    COMMAND ${LCOV} --remove coverage.info "/usr/*" ${CMAKE_BINARY_DIR}"/vcpkg/*"  -o coverage.info.filtered
     # generate report
     COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info.filtered 
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR} VERBATIM)
 
-  message(STATUS "cmake-binary-dir: " ${CMAKE_BINARY_DIR})
+  message(STATUS "CMAKE_BINARY_DIR: " ${CMAKE_BINARY_DIR})
 
   message(STATUS "Test coverage is ON")
 endif()
