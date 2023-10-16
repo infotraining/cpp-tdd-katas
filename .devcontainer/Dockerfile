@@ -1,7 +1,7 @@
 FROM gcc:latest
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-     && apt-get -y install --no-install-recommends cmake curl zip unzip tar 
+     && apt-get -y install --no-install-recommends cmake curl zip unzip tar lcov
      # && apt-get -y install --no-install-recommends libboost-all-dev
 
 RUN git clone https://github.com/Microsoft/vcpkg.git /opt/vcpkg
