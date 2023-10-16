@@ -12,7 +12,7 @@ if(DEFINED ENV{VCPKG_DEFAULT_TRIPLET} AND NOT DEFINED VCPKG_TARGET_TRIPLET)
   set(VCPKG_TARGET_TRIPLET "$ENV{VCPKG_DEFAULT_TRIPLET}" CACHE STRING "")
 endif()
 
-project(cpp-tdd LANGUAGES CXX)
+project(cpp-tdd-katas LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -39,11 +39,14 @@ if(NOT MSVC AND ENABLE_COVERAGE)
   add_custom_target(coverage
     # gather data
     COMMAND ${LCOV} --directory . --capture --output-file coverage.info
+    COMMAND ${LCOV} --remove coverage.info "/usr/*" ${CMAKE_BINARY_DIR}"/vcpkg_installed/*"  -o coverage.info.filtered
     # generate report
-    COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+    COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info.filtered 
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR} VERBATIM)
 
-  message(STATUS "Test coverage for " ${PROJECT_ID} " is ON")
+  message(STATUS "cmake-binary-dir: " ${CMAKE_BINARY_DIR})
+
+  message(STATUS "Test coverage is ON")
 endif()
 
 add_subdirectory(bowling-catch)
