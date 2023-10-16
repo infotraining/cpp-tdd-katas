@@ -27,8 +27,8 @@ SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${OUTPUT_DIRECTORY}/lib")
 enable_testing()
 
 if(NOT MSVC AND ENABLE_COVERAGE)
-  # set compiler flags
-  set(CMAKE_CXX_FLAGS "-O0 -coverage")
+    # set compiler flags
+    set(CMAKE_CXX_FLAGS "-O0 -coverage")
 
   # find required tools
   find_program(LCOV lcov REQUIRED)
@@ -38,7 +38,7 @@ if(NOT MSVC AND ENABLE_COVERAGE)
   add_custom_target(coverage
     # gather data
     COMMAND ${LCOV} --directory . --capture --output-file coverage.info
-    COMMAND ${LCOV} --remove coverage.info "/usr/*" ${CMAKE_BINARY_DIR}"/vcpkg/*"  -o coverage.info.filtered
+    COMMAND ${LCOV} --remove coverage.info "/usr/*" ${CMAKE_SOURCE_DIR}"/vcpkg/*"  -o coverage.info.filtered
     # generate report
     COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info.filtered 
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR} VERBATIM)
