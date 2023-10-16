@@ -27,6 +27,25 @@ SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${OUTPUT_DIRECTORY}/lib")
 
 enable_testing()
 
+if(NOT MSVC AND ENABLE_COVERAGE)
+  # set compiler flags
+  set(CMAKE_CXX_FLAGS "-O0 -coverage")
+
+  # find required tools
+  find_program(LCOV lcov REQUIRED)
+  find_program(GENHTML genhtml REQUIRED)
+
+  # add coverage target
+  add_custom_target(coverage
+    # gather data
+    COMMAND ${LCOV} --directory . --capture --output-file coverage.info
+    # generate report
+    COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+
+  message(STATUS "Test coverage for " ${PROJECT_ID} " is ON")
+endif()
+
 add_subdirectory(bowling-catch)
 add_subdirectory(bowling-gtest)
 add_subdirectory(recently-used-list-catch)
