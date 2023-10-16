@@ -100,7 +100,7 @@ TEST_CASE("rover executes set of commands")
             std::pair{"FFRFFLFFRFFLFFRFFLFF", Position{6, 8, 'N'}},
             std::pair{"FFRFFLFFRFBBFLFBBFRFFLFF", Position{4, 6, 'N'}});
 
-        auto [commands, end] = commands_end;        
+        auto [commands, end] = commands_end;
 
         Position result = rover.go(commands);
 
@@ -125,7 +125,7 @@ TEST_CASE("rover executes set of commands")
 
     SECTION("at unknown commands")
     {
-        
+
         SECTION("exception is thrown")
         {
             auto cmd = "FFRFFLFFxLLLL";
@@ -134,11 +134,11 @@ TEST_CASE("rover executes set of commands")
             {
                 rover.go(cmd);
             }
-            catch(const UnknownCommand& e)
+            catch (const UnknownCommand& e)
             {
                 REQUIRE(e == UnknownCommand{"x", "FFRFFLFFxLLLL"});
             }
-            catch(...)
+            catch (...)
             {
                 FAIL("Unknown exception");
             }
@@ -158,18 +158,17 @@ TEST_CASE("rover executes set of commands")
 TEST_CASE("rover wraps coordinates on the map")
 {
     Grid grid{10, 10};
-    
+
     auto params = GENERATE(
-        std::tuple{Position{0, 9, 'N'}, "F", Position{0, 0, 'N'}},         
+        std::tuple{Position{0, 9, 'N'}, "F", Position{0, 0, 'N'}},
         std::tuple{Position{0, 0, 'N'}, "B", Position{0, 9, 'N'}},
         std::tuple{Position{9, 0, 'E'}, "F", Position{0, 0, 'E'}},
-        std::tuple{Position{0, 0, 'E'}, "B", Position{9, 0, 'E'}}
-    );
+        std::tuple{Position{0, 0, 'E'}, "B", Position{9, 0, 'E'}});
 
     auto [start_pos, cmd, end_pos] = params;
 
     Rover rover{start_pos, grid};
-    
+
     Position result = rover.go(cmd);
 
     REQUIRE(result == end_pos);
