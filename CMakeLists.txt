@@ -43,6 +43,7 @@ if(NOT MSVC AND ENABLE_COVERAGE)
     COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info.filtered 
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR} VERBATIM)
 
+  message(STATUS "Filter: " "\""${CMAKE_SOURCE_DIR}"vcpkg/*\"" "\""${CMAKE_BINARY_DIR}"vcpkg_installed/*\"")
   message(STATUS "CMAKE_BINARY_DIR: " "\""${CMAKE_BINARY_DIR}"\"")
 
   message(STATUS "Test coverage is ON")
