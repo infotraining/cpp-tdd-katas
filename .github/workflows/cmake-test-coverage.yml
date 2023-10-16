@@ -23,9 +23,14 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get install curl zip unzip tar lcov
   
-      - name: Setup vcpkg (it does not install any package yet)
-        uses: lukka/run-vcpkg@v11
-  
+      - name: vcpkg build
+        id: vcpkg
+        uses: johnwason/vcpkg-action@v5
+        with:
+          manifest-dir: ${{ github.workspace }} # Set to directory containing vcpkg.json
+          triplet: x64-linux # Set to desired triplet
+          token: ${{ github.token }}
+      
       # - name: Create build directory
       #   run: cmake -E make_directory ${{runner.workspace}}/build
   
