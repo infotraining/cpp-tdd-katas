@@ -11,6 +11,6 @@ WORKDIR /opt/vcpkg
 RUN ./bootstrap-vcpkg.sh && ./vcpkg integrate install && ./vcpkg integrate bash && echo 'export PATH=$PATH:/opt/vcpkg' >>~/.bashrc
 RUN echo 'export VCPKG_ROOT=/opt/vcpkg' >>~/.bashrc
 
-# RUN /opt/vcpkg/vcpkg install catch2 gtest bext-di
+RUN /opt/vcpkg/vcpkg install catch2 gtest bext-di
 
 WORKDIR /root

@@ -8,6 +8,7 @@
 #include <ranges>
 #include <string>
 #include <vector>
+#include <limits>
 
 namespace TDD
 {
