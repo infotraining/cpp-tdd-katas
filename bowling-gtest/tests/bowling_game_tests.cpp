@@ -142,4 +142,4 @@ const BowlingTestParams bowling_test_input[] = {
     {{1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 10}, 119},
     {{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}, 300}};
 
-INSTANTIATE_TEST_CASE_P(PackOfBowlingTests, BowlingBulkTests, ::testing::ValuesIn(bowling_test_input));
+INSTANTIATE_TEST_SUITE_P(PackOfBowlingTests, BowlingBulkTests, ::testing::ValuesIn(bowling_test_input));

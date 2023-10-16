@@ -5,6 +5,7 @@
 #include <deque>
 #include <stdexcept>
 #include <string>
+#include <limits>
 
 class RecentlyUsedList
 {

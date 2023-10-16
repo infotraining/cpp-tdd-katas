@@ -1,14 +1,21 @@
-set(PROJECT_TESTS ${PROJECT_ID}_tests)
+set(PROJECT_TESTS "tests-${PROJECT_ID}")
+set(PROJECT_TESTS "tests-${PROJECT_ID}" PARENT_SCOPE)
 message(STATUS "PROJECT_TESTS is: " ${PROJECT_TESTS})
 
-project(${PROJECT_TESTS})
+# project(${PROJECT_TESTS})
 
-###############
-# Unit tests
 find_package(GTest CONFIG REQUIRED)
+enable_testing()
 
-file(GLOB TEST_SOURCES *_tests.cpp *_test.cpp)
-add_executable(${PROJECT_TESTS} ${TEST_SOURCES})
-target_link_libraries(${PROJECT_TESTS} PRIVATE ${PROJECT_LIB} GTest::gtest GTest::gmock)
+####################
+# Sources & headers
+file(GLOB SRC_FILES *.cpp *.c *.cxx)
+file(GLOB SRC_HEADERS *.h *.hpp *.hxx)
 
-add_test(AllTestsInMain ${PROJECT_TESTS})
+add_executable(${PROJECT_TESTS} ${SRC_FILES} ${SRC_HEADERS})
+
+target_link_libraries(${PROJECT_TESTS} ${PROJECT_LIB} GTest::gmock_main)
+
+include(CTest)
+include(GoogleTest)
+gtest_discover_tests(${PROJECT_TESTS})
