@@ -26,6 +26,8 @@ SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${OUTPUT_DIRECTORY}/lib")
 
 enable_testing()
 
+SET(ENABLE_COVERAGE True)
+
 if(NOT MSVC AND ENABLE_COVERAGE)
     # set compiler flags
     set(CMAKE_CXX_FLAGS "-O0 -coverage")
@@ -34,17 +36,20 @@ if(NOT MSVC AND ENABLE_COVERAGE)
   find_program(LCOV lcov REQUIRED)
   find_program(GENHTML genhtml REQUIRED)
 
+  cmake_path(SET vcpkg_path "${CMAKE_SOURCE_DIR}/vcpkg" )
+  cmake_path(SET vcpkg_installed_path "${CMAKE_SOURCE_DIR}/vcpkg_installed" )
+
+  message(STATUS "Vcpkg path: \"${vcpkg_path}\"")
+  message(STATUS "Vcpkg_installed path: \"${vcpkg_installed_path}\"")
+
   # add coverage target
   add_custom_target(coverage
     # gather data
     COMMAND ${LCOV} --directory . --capture --output-file coverage.info
-    COMMAND ${LCOV} --remove coverage.info "/usr/*" "\""${CMAKE_SOURCE_DIR}/vcpkg/*"\"" "\""${CMAKE_BINARY_DIR}/vcpkg_installed/*"\""  -o coverage.info.filtered
+    COMMAND ${LCOV} --remove coverage.info "/usr/*" "${CMAKE_SOURCE_DIR}/vcpkg/*" "${CMAKE_SOURCE_DIR}/vcpkg_installed/*"  -o coverage.info.filtered
     # generate report
     COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info.filtered 
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR} VERBATIM)
-
-  message(STATUS "Filter: " "\""${CMAKE_SOURCE_DIR}/vcpkg/*"\"" "\""${CMAKE_BINARY_DIR}/vcpkg_installed/*"\"")
-  message(STATUS "CMAKE_BINARY_DIR: " "\""${CMAKE_BINARY_DIR}"\"")
 
   message(STATUS "Test coverage is ON")
 endif()
