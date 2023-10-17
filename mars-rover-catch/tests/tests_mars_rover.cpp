@@ -180,7 +180,7 @@ TEST_CASE("rover executes set of commands")
             }
             catch (...)
             {
-                FAIL();
+                FAIL("Unknown exception");
             }
         }
 
@@ -252,5 +252,29 @@ TEST_CASE("detecting obstacles")
         Rover rover = RoverBuilder{}.with_detector(std::move(detector)).build();
 
         REQUIRE_THROWS_AS(rover.go("F"), ObstacleDetected);
+    }
+
+    SECTION("when there is an obstacle rover stops")
+    {
+        std::array detection_results = { false, false, false, false, true };
+        auto get_detection_results = [detection_results, i = 0]() mutable -> bool
+        {
+            return detection_results[i++];
+        };
+
+        REQUIRE_CALL(*detector, detect_obstacle(ANY(Coordinates))).TIMES(5).LR_RETURN(get_detection_results());
+
+        Rover rover = RoverBuilder{}.with_detector(std::move(detector)).build();
+
+        try
+        {
+            rover.go("FFRFLFF");
+        }
+        catch (const ObstacleDetected& e)
+        {
+            CHECK(e.coordinates == Coordinates{1, 4});
+        }
+
+        REQUIRE(rover.position() == Position{1, 3, 'N'});
     }
 }
