@@ -4,15 +4,25 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators_all.hpp>
 #include <catch2/matchers/catch_matchers_all.hpp>
+#include <catch2/trompeloeil.hpp>
 #include <ranges>
 #include <string>
 
 using namespace std;
 using namespace TDD;
 
+class DummyObstacleDetector : public ObstacleDetector
+{
+public:
+    bool detect_obstacle(const Coordinates& coord) const override
+    {
+        return false;
+    }
+};
+
 TEST_CASE("rover reports its position and orientation")
 {
-    Rover rover{Position{0, 0, 'N'}};
+    Rover rover{Position{0, 0, 'N'}, std::make_unique<DummyObstacleDetector>()};
 
     REQUIRE(rover.position() == Position(0, 0, 'N'));
 }
@@ -29,7 +39,7 @@ TEST_CASE("turn left")
 
     auto [start, end] = position;
 
-    Rover rover{start};
+    Rover rover{start, std::make_unique<DummyObstacleDetector>()};
 
     rover.turn_left();
 
@@ -46,7 +56,7 @@ TEST_CASE("turn right")
 
     auto [start, end] = position;
 
-    Rover rover{start};
+    Rover rover{start, std::make_unique<DummyObstacleDetector>()};
 
     rover.turn_right();
 
@@ -63,7 +73,7 @@ TEST_CASE("move forward")
 
     auto [start, end] = position;
 
-    Rover rover{start};
+    Rover rover{start, std::make_unique<DummyObstacleDetector>()};
 
     rover.move_forward();
 
@@ -80,7 +90,7 @@ TEST_CASE("move backward")
 
     auto [start, end] = position;
 
-    Rover rover{start};
+    Rover rover{start, std::make_unique<DummyObstacleDetector>()};
 
     rover.move_backward();
 
@@ -89,7 +99,7 @@ TEST_CASE("move backward")
 
 TEST_CASE("rover executes set of commands")
 {
-    Rover rover{0, 0, 'N'};
+    Rover rover{Position{0, 0, 'N'}, std::make_unique<DummyObstacleDetector>()};
 
     SECTION("returning final position")
     {
@@ -140,7 +150,7 @@ TEST_CASE("rover executes set of commands")
             }
             catch (...)
             {
-                FAIL("Unknown exception");
+                FAIL();
             }
         }
 
@@ -167,7 +177,7 @@ TEST_CASE("rover wraps coordinates on the map")
 
     auto [start_pos, cmd, end_pos] = params;
 
-    Rover rover{start_pos, grid};
+    Rover rover{start_pos, std::make_unique<DummyObstacleDetector>(), grid};
 
     Position result = rover.go(cmd);
 
@@ -183,4 +193,34 @@ TEST_CASE("Grid - wrapping")
     Position result = grid.wrap(pos);
 
     REQUIRE(result == Position{5, 7, 'N'});
+}
+
+class ObstacleDetectorMock : public ObstacleDetector
+{
+public:
+    MAKE_CONST_MOCK1(detect_obstacle, bool(const Coordinates&), override);
+};
+
+TEST_CASE("detecting obstacles")
+{
+    auto detector = std::make_unique<ObstacleDetectorMock>();
+
+    SECTION("when there is no obstacle rover moves forward")
+    {
+        REQUIRE_CALL(*detector, detect_obstacle(Coordinates{0, 1})).RETURN(false);
+
+        Rover rover{Position{0, 0, 'N'}, std::move(detector)};
+        Position result = rover.go("F");
+
+        REQUIRE(result == Position{0, 1, 'N'});
+    }
+
+    SECTION("when there is an obstacle exception is thrown")
+    {
+        REQUIRE_CALL(*detector, detect_obstacle(Coordinates{0, 1})).RETURN(true);
+
+        Rover rover{Position{0, 0, 'N'}, std::move(detector)};
+
+        REQUIRE_THROWS_AS(rover.go("F"), ObstacleDetected);
+    }
 }

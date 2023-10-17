@@ -8,6 +8,7 @@ aux_source_directory(. SRC_LIST)
 file(GLOB HEADERS_LIST "*.h" "*.hpp")
 
 find_package(Catch2 3 REQUIRED)
+find_package(trompeloeil CONFIG REQUIRED)
 
 if (NOT Catch2_FOUND)
   Include(FetchContent)
@@ -28,6 +29,6 @@ include(Catch)
 
 add_executable(${PROJECT_TESTS} ${SRC_LIST} ${HEADERS_LIST})
 
-target_link_libraries(${PROJECT_TESTS} PRIVATE Catch2::Catch2WithMain ${PROJECT_LIB})
+target_link_libraries(${PROJECT_TESTS} PRIVATE Catch2::Catch2WithMain trompeloeil::trompeloeil ${PROJECT_LIB})
 
 catch_discover_tests(${PROJECT_TESTS})

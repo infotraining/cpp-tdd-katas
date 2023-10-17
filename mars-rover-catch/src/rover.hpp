@@ -5,10 +5,10 @@
 #include <array>
 #include <cassert>
 #include <iostream>
+#include <limits>
 #include <ranges>
 #include <string>
 #include <vector>
-#include <limits>
 
 namespace TDD
 {
@@ -138,8 +138,8 @@ namespace TDD
         size_t max_x;
         size_t max_y;
 
-        Grid(size_t max_x = std::numeric_limits<size_t>::max(), 
-             size_t max_y = std::numeric_limits<size_t>::max())
+        Grid(size_t max_x = std::numeric_limits<size_t>::max(),
+            size_t max_y = std::numeric_limits<size_t>::max())
             : max_x{max_x}
             , max_y{max_y}
         {
@@ -156,19 +156,41 @@ namespace TDD
         }
     };
 
+    class ObstacleDetector
+    {
+    public:
+        virtual ~ObstacleDetector() = default;
+        virtual bool detect_obstacle(const Coordinates& coord) const = 0;
+    };
+
+    struct ObstacleDetected : std::exception
+    {
+        Coordinates coordinates;
+
+        ObstacleDetected(Coordinates coord)
+            : coordinates{coord}
+        {
+        }
+    };
+
     class Rover
     {
         Position position_;
+        std::unique_ptr<ObstacleDetector> detector_;
         Grid grid_;
 
     public:
-        Rover(int x, int y, char orientation, Grid grid = {})
-            : position_{x, y, orientation}, grid_{grid}
+        Rover(int x, int y, char orientation, std::unique_ptr<ObstacleDetector> detector, Grid grid = {})
+            : position_{x, y, orientation}
+            , detector_{std::move(detector)}
+            , grid_{grid}
         {
         }
 
-        Rover(Position position, Grid grid = {})
-            : position_{position}, grid_{grid}
+        Rover(Position position, std::unique_ptr<ObstacleDetector> detector, Grid grid = {})
+            : position_{position}
+            , detector_{std::move(detector)}
+            , grid_{grid}
         {
         }
 
@@ -189,6 +211,11 @@ namespace TDD
 
         void move_forward()
         {
+            if (auto coordinates = position_.move_forward().coordinates(); detector_->detect_obstacle(coordinates))
+            {
+                throw ObstacleDetected{coordinates};
+            }
+
             position_ = position_.move_forward();
         }
 
