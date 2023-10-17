@@ -333,7 +333,7 @@ public:
 
 +++
 
-Now test is passed. Let's refactore some code:
+Now test is passed. Let's refactor some code:
 
 +++
 

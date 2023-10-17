@@ -1,4 +1,5 @@
 #include "bowling.hpp"
+
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 #include <numeric>
@@ -107,6 +108,36 @@ struct BowlingGameExample
     unsigned int expected_score;
 };
 
+std::ostream& operator<<(std::ostream& out, const BowlingGameExample& param)
+{
+    out << "{ [ ";
+
+    for (const auto& pin : param.pins)
+    {
+        out << pin << " ";
+    }
+
+    out << "] - " << param.expected_score << " }";
+    return out;
+}
+
+namespace std
+{
+    template <typename T>
+    std::ostream& operator<<(std::ostream& out, const std::vector<T>& vec)
+    {
+        out << "[ ";
+
+        for (const auto& item : vec)
+        {
+            out << item << " ";
+        }
+
+        out << "]";
+        return out;
+    }
+} // namespace std
+
 TEST_CASE("Parametrized tests")
 {
     auto params = GENERATE(
@@ -116,10 +147,13 @@ TEST_CASE("Parametrized tests")
         BowlingGameExample{{1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 10}, 119},
         BowlingGameExample{{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}, 300});
 
-    BowlingGame game;
+    DYNAMIC_SECTION("When rolls are " << params.pins << " score is " << params.expected_score)
+    {
+        BowlingGame game;
 
-    for (const auto& r : params.pins)
-        game.roll(r);
+        for (const auto& r : params.pins)
+            game.roll(r);
 
-    REQUIRE(game.score() == params.expected_score);
+        REQUIRE(game.score() == params.expected_score);
+    }
 }
