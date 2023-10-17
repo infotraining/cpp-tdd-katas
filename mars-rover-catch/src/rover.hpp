@@ -9,6 +9,7 @@
 #include <ranges>
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace TDD
 {

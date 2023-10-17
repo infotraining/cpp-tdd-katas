@@ -165,7 +165,6 @@ TEST_CASE("rover executes set of commands")
 
     SECTION("at unknown commands")
     {
-
         SECTION("exception is thrown")
         {
             auto cmd = "FFRFFLFFxLLLL";
@@ -256,9 +255,8 @@ TEST_CASE("detecting obstacles")
 
     SECTION("when there is an obstacle rover stops")
     {
-        std::array detection_results = { false, false, false, false, true };
-        auto get_detection_results = [detection_results, i = 0]() mutable -> bool
-        {
+        std::array detection_results = {false, false, false, false, true};
+        auto get_detection_results = [detection_results, i = 0]() mutable -> bool {
             return detection_results[i++];
         };
 
