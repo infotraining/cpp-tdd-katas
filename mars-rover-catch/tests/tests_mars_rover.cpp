@@ -20,9 +20,39 @@ public:
     }
 };
 
+struct RoverBuilder
+{
+    Position pos_ = {0, 0, 'N'};
+    std::unique_ptr<ObstacleDetector> detector_ = std::make_unique<DummyObstacleDetector>();
+    Grid grid_ = {10, 10};
+
+    RoverBuilder& at(const Position& pos)
+    {
+        pos_ = pos;
+        return *this;
+    }
+
+    RoverBuilder& with_detector(std::unique_ptr<ObstacleDetector> detector)
+    {
+        detector_ = std::move(detector);
+        return *this;
+    }
+
+    RoverBuilder& with_grid(const Grid& grid)
+    {
+        grid_ = grid;
+        return *this;
+    }
+
+    Rover build()
+    {
+        return {pos_, std::move(detector_), grid_};
+    }
+};
+
 TEST_CASE("rover reports its position and orientation")
 {
-    Rover rover{Position{0, 0, 'N'}, std::make_unique<DummyObstacleDetector>()};
+    auto rover = RoverBuilder{}.build();
 
     REQUIRE(rover.position() == Position(0, 0, 'N'));
 }
@@ -39,7 +69,7 @@ TEST_CASE("turn left")
 
     auto [start, end] = position;
 
-    Rover rover{start, std::make_unique<DummyObstacleDetector>()};
+    Rover rover = RoverBuilder{}.at(start).build();
 
     rover.turn_left();
 
@@ -56,7 +86,7 @@ TEST_CASE("turn right")
 
     auto [start, end] = position;
 
-    Rover rover{start, std::make_unique<DummyObstacleDetector>()};
+    Rover rover = RoverBuilder{}.at(start).build();
 
     rover.turn_right();
 
@@ -90,7 +120,7 @@ TEST_CASE("move backward")
 
     auto [start, end] = position;
 
-    Rover rover{start, std::make_unique<DummyObstacleDetector>()};
+    Rover rover = RoverBuilder{}.at(start).build();
 
     rover.move_backward();
 
@@ -99,7 +129,7 @@ TEST_CASE("move backward")
 
 TEST_CASE("rover executes set of commands")
 {
-    Rover rover{Position{0, 0, 'N'}, std::make_unique<DummyObstacleDetector>()};
+    Rover rover = RoverBuilder{}.build();
 
     SECTION("returning final position")
     {
@@ -177,7 +207,7 @@ TEST_CASE("rover wraps coordinates on the map")
 
     auto [start_pos, cmd, end_pos] = params;
 
-    Rover rover{start_pos, std::make_unique<DummyObstacleDetector>(), grid};
+    Rover rover = RoverBuilder{}.at(start_pos).with_grid(grid).build();
 
     Position result = rover.go(cmd);
 
@@ -209,7 +239,7 @@ TEST_CASE("detecting obstacles")
     {
         REQUIRE_CALL(*detector, detect_obstacle(Coordinates{0, 1})).RETURN(false);
 
-        Rover rover{Position{0, 0, 'N'}, std::move(detector)};
+        Rover rover = RoverBuilder{}.with_detector(std::move(detector)).build();
         Position result = rover.go("F");
 
         REQUIRE(result == Position{0, 1, 'N'});
@@ -219,7 +249,7 @@ TEST_CASE("detecting obstacles")
     {
         REQUIRE_CALL(*detector, detect_obstacle(Coordinates{0, 1})).RETURN(true);
 
-        Rover rover{Position{0, 0, 'N'}, std::move(detector)};
+        Rover rover = RoverBuilder{}.with_detector(std::move(detector)).build();
 
         REQUIRE_THROWS_AS(rover.go("F"), ObstacleDetected);
     }
