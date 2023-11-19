@@ -16,8 +16,7 @@ public:
 
         for(size_t i = 0; i < frame_count; ++i)
         {
-            size_t pins_in_frame, rolls_in_frame;
-            std::tie(pins_in_frame, rolls_in_frame) = frame_score(roll_index);
+            auto [pins_in_frame, rolls_in_frame] = frame_score(roll_index);
 
             result += pins_in_frame;
 

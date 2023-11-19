@@ -138,7 +138,7 @@ namespace std
     }
 } // namespace std
 
-TEST_CASE("Parametrized tests")
+TEST_CASE("Game examples", "[score]")
 {
     auto params = GENERATE(
         BowlingGameExample{{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 20},
